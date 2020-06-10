@@ -16,13 +16,15 @@ class MulticastLockManager private constructor() {
 
     private var multicastLock: WifiManager.MulticastLock? = null
 
-    fun acquire(tag: String = "multicast.udp", context: Context) {
+    fun acquire(context: Context?, tag: String = "multicast.udp") {
+        if (context == null) return
         if (multicastLock == null) {
             val wifiManager =
                 context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
             multicastLock = wifiManager?.createMulticastLock(tag)
         }
-        multicastLock?.acquire()
+        if (multicastLock?.isHeld == false)
+            multicastLock?.acquire()
     }
 
     fun release() {

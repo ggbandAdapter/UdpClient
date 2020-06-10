@@ -24,9 +24,7 @@ class UdpSender(private val ip: String, private val port: Int) {
     fun sendMessage(buf: ByteArray) {
         initSender()
         try {
-            UdpThreadPoolManager.submit {
-                mSendSKT?.send(buildSendPackage(buf))
-            }
+            submit { mSendSKT?.send(buildSendPackage(buf)) }
         } catch (exception: IOException) {
             exception.printStackTrace()
             sendFail()

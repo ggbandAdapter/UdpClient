@@ -17,6 +17,9 @@ class UdpClient constructor(private val builder: Builder) {
     }
     private val sender: UdpSender by lazy { UdpSender(builder.getIP(), builder.getsPort()) }
 
+    init {
+        MulticastLockManager.instance.acquire(builder.getContext())
+    }
 
     fun <T> create(service: Class<T>): T {
         return Proxy.newProxyInstance(
@@ -44,6 +47,7 @@ class UdpClient constructor(private val builder: Builder) {
         receiver.stop()
         sender.stop()
         callbackHelper.clear()
+        MulticastLockManager.instance.release()
     }
 
     class Builder {

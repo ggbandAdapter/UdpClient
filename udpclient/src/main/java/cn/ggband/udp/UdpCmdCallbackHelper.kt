@@ -48,7 +48,7 @@ class UdpCmdCallbackHelper constructor(
 
     private fun startTimeOutLoop() {
         isTimeOutLoop = true
-        UdpThreadPoolManager.submit {
+        submit {
             while (isTimeOutLoop) {
                 if (mCallbacks.isEmpty()) {
                     isTimeOutLoop = false

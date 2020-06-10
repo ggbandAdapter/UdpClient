@@ -29,7 +29,7 @@ class UdpReceiver(
         if (mReceiveSKT == null || mReceiveSKT!!.isClosed) {
             initReceiver()
         }
-        UdpThreadPoolManager.submit {
+        submit {
             while (mReceiveSKT != null) {
                 receiveMessage()
             }
