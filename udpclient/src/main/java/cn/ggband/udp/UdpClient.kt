@@ -6,6 +6,9 @@ import java.lang.reflect.Proxy
 import java.lang.reflect.Type
 
 class UdpClient constructor(private val builder: Builder) {
+    companion object{
+        val LOG_TAG  = "udp_client"
+    }
 
     private val callbackHelper: UdpCmdCallbackHelper by lazy { UdpCmdCallbackHelper(builder.convert()) }
     private val receiver: UdpReceiver by lazy {
