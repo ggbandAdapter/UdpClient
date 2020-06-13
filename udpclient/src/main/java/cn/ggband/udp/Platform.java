@@ -73,13 +73,13 @@ public class Platform {
         public void send(final UdpCallBack<Object> callback) {
             mClient.send(params.getTaskId(), params.getData(), new UdpCallBack<Object>() {
                 @Override
-                public void timeOut() {
-                    callback.timeOut();
+                public void onReceiveDone() {
+                    callback.onReceiveDone();
                 }
 
                 @Override
-                public void callback(Object data, InetAddress address) {
-                    callback.callback(data, address);
+                public void onReceive(Object data, InetAddress address) {
+                    callback.onReceive(data, address);
                 }
             }, params.getReturnType());
         }

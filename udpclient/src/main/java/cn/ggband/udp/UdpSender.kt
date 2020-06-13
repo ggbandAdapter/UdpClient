@@ -13,7 +13,7 @@ class UdpSender(private val ip: String, private val port: Int) {
         if (mSendSKT == null || mSendSKT!!.isClosed)
             try {
                 mSendSKT = MulticastSocket(port)
-                mSendSKT!!.timeToLive = 3
+                mSendSKT!!.timeToLive = 6
                 val address = InetAddress.getByName(ip)
                 mSendSKT!!.joinGroup(address)
             } catch (exception: Exception) {

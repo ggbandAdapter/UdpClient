@@ -12,10 +12,12 @@ import kotlin.collections.ArrayList
 
 class UdpCmdCallbackHelper constructor(
     private val convert: UdpResConvertInterface,
-    private val timeOut: Long = 15000
+    timeOut: Long = 0
 ) {
 
     private var isTimeOutLoop = false
+
+    private val descOutTime = if (timeOut > 0) timeOut else 6000
 
     private val mCallbacks: MutableList<CallbackParams> by lazy {
         Collections.synchronizedList(
@@ -33,15 +35,12 @@ class UdpCmdCallbackHelper constructor(
 
     private fun getCallback(taskId: String): CallbackParams? {
 
-        val callBacks = mCallbacks.filter {
+        return mCallbacks.filter {
             if (taskId.isEmpty())
                 true
             else
                 it.taskId == taskId
         }.minBy { it.taskTime }
-        mCallbacks.remove(callBacks)
-        return callBacks
-
     }
 
     fun clear() {
@@ -68,7 +67,7 @@ class UdpCmdCallbackHelper constructor(
         getCallback(convert.getTaskId(data))?.run {
             //回调到主线程
             Handler(Looper.getMainLooper()).post {
-                callBack?.callback(
+                callBack?.onReceive(
                     convert.getConvertContent(
                         data,
                         returnType
@@ -85,10 +84,10 @@ class UdpCmdCallbackHelper constructor(
 
     private fun dealTimeOutCallback() {
         val timeOutCallbacks =
-            mCallbacks.filter { System.currentTimeMillis() - it.taskTime > timeOut }
+            mCallbacks.filter { System.currentTimeMillis() - it.taskTime > descOutTime }
         timeOutCallbacks.forEach {
             Log.d(UdpClient.LOG_TAG, "udp cmd:${it.taskId} 响应超时")
-            it.callBack.timeOut()
+            it.callBack.onReceiveDone()
         }
         mCallbacks.removeAll(timeOutCallbacks)
     }

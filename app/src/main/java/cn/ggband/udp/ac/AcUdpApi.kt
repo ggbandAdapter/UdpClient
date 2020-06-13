@@ -23,11 +23,11 @@ val acUdpApi = acUdpClient.create(AcUdpApi::class.java)
 
 fun <T> Call<T>.send(suc: (T, InetAddress) -> Unit, fail: () -> Unit) {
     send(object : UdpCallBack<T> {
-        override fun callback(data: T, address: InetAddress) {
+        override fun onReceive(data: T, address: InetAddress) {
             suc(data, address)
         }
 
-        override fun timeOut() {
+        override fun onReceiveDone() {
             fail()
         }
     })
