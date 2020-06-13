@@ -9,23 +9,22 @@ import java.util.concurrent.Future
 /**
  * UDP--线程管理
  */
-object UdpThreadPoolManager {
 
-    private val simpleExecutor: ExecutorService by lazy {
-        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-    }
 
-    /**
-     * 子线程运行
-     */
-    fun submit(body: () -> Unit): Future<*> {
-        return simpleExecutor.submit(body)
-    }
+private val simpleExecutor: ExecutorService by lazy {
+    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+}
 
-    /**
-     * 主线程运行
-     */
-    fun runOnUi(body: () -> Unit) {
-        Handler(Looper.getMainLooper()).post { body.invoke() }
-    }
+/**
+ * 子线程运行
+ */
+fun submit(body: () -> Unit): Future<*> {
+    return simpleExecutor.submit(body)
+}
+
+/**
+ * 主线程运行
+ */
+fun runOnUi(body: () -> Unit) {
+    Handler(Looper.getMainLooper()).post { body.invoke() }
 }

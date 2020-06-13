@@ -6,6 +6,9 @@ import java.lang.reflect.Proxy
 import java.lang.reflect.Type
 
 class UdpClient constructor(private val builder: Builder) {
+    companion object{
+        val LOG_TAG  = "udp_client"
+    }
 
     private val callbackHelper: UdpCmdCallbackHelper by lazy { UdpCmdCallbackHelper(builder.convert()) }
     private val receiver: UdpReceiver by lazy {
@@ -17,6 +20,9 @@ class UdpClient constructor(private val builder: Builder) {
     }
     private val sender: UdpSender by lazy { UdpSender(builder.getIP(), builder.getsPort()) }
 
+    init {
+        MulticastLockManager.instance.acquire(builder.getContext())
+    }
 
     fun <T> create(service: Class<T>): T {
         return Proxy.newProxyInstance(
@@ -44,6 +50,7 @@ class UdpClient constructor(private val builder: Builder) {
         receiver.stop()
         sender.stop()
         callbackHelper.clear()
+        MulticastLockManager.instance.release()
     }
 
     class Builder {
