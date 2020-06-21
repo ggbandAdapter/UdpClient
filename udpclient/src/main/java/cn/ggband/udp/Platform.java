@@ -71,7 +71,7 @@ public class Platform {
 
         @Override
         public void send(final UdpCallBack<Object> callback) {
-            mClient.send(params.getTaskId(), params.getData(), new UdpCallBack<Object>() {
+            mClient.send(params.getData(), new UdpCallBack<Object>() {
                 @Override
                 public void onReceiveDone() {
                     callback.onReceiveDone();

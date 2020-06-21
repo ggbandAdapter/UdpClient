@@ -2,14 +2,12 @@ package cn.ggband.udp;
 
 import com.google.gson.Gson;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import cn.ggband.udp.anno.Field;
-import cn.ggband.udp.anno.Task;
 import cn.ggband.udp.bean.ParseParams;
 
 public class Parse {
@@ -39,7 +37,7 @@ public class Parse {
         Class[] parameterTypes = method.getParameterTypes();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int parameterTypesLength = parameterTypes.length;
-        if (parameterTypesLength != 2) {
+        if (parameterTypesLength != 1) {
             throw new IllegalArgumentException("annotation error");
         }
         Object[] values = (Object[]) args[0];
@@ -53,14 +51,9 @@ public class Parse {
             Annotation annotation = getParameterAnnotation(i, parameterAnnotations);
             targetAnnotations[i] = annotation;
         }
-        String taskId = "";
         byte[] data = "".getBytes();
         for (int i = 0; i < parameterTypesLength; i++) {
-
-            if (targetAnnotations[i] instanceof Task) {
-                //   TaskId taskIdAnno = (TaskId) targetAnnotations[i];
-                taskId = values[i].toString();
-            } else if (targetAnnotations[i] instanceof Field) {
+            if (targetAnnotations[i] instanceof Field) {
                 //  Field field = (Field) targetAnnotations[i];
                 if (parameterTypes[i] == byte[].class) {
                     data = (byte[]) values[i];
@@ -71,7 +64,7 @@ public class Parse {
                 }
             }
         }
-        return new ParseParams(taskId, data);
+        return new ParseParams(data);
     }
 
 
@@ -87,9 +80,6 @@ public class Parse {
         Annotation targetAnnotation = null;
         for (Annotation annotation : annotations) {
             if (annotation instanceof Field) {
-                targetAnnotation = annotation;
-                break;
-            } else if (annotation instanceof Task) {
                 targetAnnotation = annotation;
                 break;
             }

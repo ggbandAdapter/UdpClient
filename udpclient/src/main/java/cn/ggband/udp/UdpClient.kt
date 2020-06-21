@@ -6,19 +6,17 @@ import java.lang.reflect.Proxy
 import java.lang.reflect.Type
 
 class UdpClient constructor(private val builder: Builder) {
-    companion object{
-        val LOG_TAG  = "udp_client"
+    companion object {
+        val LOG_TAG = "udp_client"
     }
 
-    private val callbackHelper: UdpCmdCallbackHelper by lazy { UdpCmdCallbackHelper(builder.convert(),builder.getOutTime()) }
-    private val receiver: UdpReceiver by lazy {
-        UdpReceiver(
-            builder.getIP(),
-            builder.getRPort(),
-            callbackHelper
+    private val callbackHelper: UdpCmdCallbackHelper by lazy {
+        UdpCmdCallbackHelper(
+            builder.convert(),
+            builder.getOutTime()
         )
     }
-    private val sender: UdpSender by lazy { UdpSender(builder.getIP(), builder.getsPort()) }
+
 
     init {
         MulticastLockManager.instance.acquire(builder.getContext())
@@ -35,20 +33,21 @@ class UdpClient constructor(private val builder: Builder) {
     }
 
 
-    fun send(taskId: String, buf: ByteArray, callBack: UdpCallBack<*>, returnType: Type? = null) {
-        checkReceiverState()
-        sender.sendMessage(buf)
-        callbackHelper.add(taskId, callBack, returnType)
+    fun send(buf: ByteArray, callBack: UdpCallBack<*>, returnType: Type? = null) {
+        submit {
+            UdpReceiver(
+                builder.getIP(),
+                builder.getRPort(),
+                callBack,
+                callbackHelper
+            ).receiveMessage()
+            UdpSender(builder.getIP(), builder.getsPort()).sendMessage(buf)
+            callbackHelper.add(callBack, returnType)
+        }
     }
 
-
-    private fun checkReceiverState() {
-        receiver.start()
-    }
 
     fun release() {
-        receiver.stop()
-        sender.stop()
         callbackHelper.clear()
         MulticastLockManager.instance.release()
     }
@@ -60,7 +59,7 @@ class UdpClient constructor(private val builder: Builder) {
         private var rPort: Int = 0
         private var convert: UdpResConvertInterface? = null
         private var context: Context? = null
-        private var outTime :Long=0
+        private var outTime: Long = 0
 
         fun getIP() = ip
 
@@ -70,7 +69,7 @@ class UdpClient constructor(private val builder: Builder) {
 
         fun getContext() = context
 
-        fun getOutTime():Long = outTime
+        fun getOutTime(): Long = outTime
 
         fun context(context: Context?): Builder {
             this.context = context
@@ -101,7 +100,7 @@ class UdpClient constructor(private val builder: Builder) {
             return convert!!
         }
 
-        fun outTime(outTime:Long):Builder{
+        fun outTime(outTime: Long): Builder {
             this.outTime = outTime
             return this
         }

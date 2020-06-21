@@ -6,25 +6,17 @@ import java.lang.reflect.Type;
 import cn.ggband.udp.UdpCallBack;
 
 public class CallbackParams {
-    private String taskId;
     private UdpCallBack callBack;
     private long taskTime = System.currentTimeMillis();
     private Type returnType;
 
 
-    public CallbackParams(String taskId, UdpCallBack callBack, Type returnType) {
-        this.taskId = taskId;
+    public CallbackParams(UdpCallBack callBack, Type returnType) {
         this.callBack = callBack;
         this.returnType = returnType;
     }
 
-    public String getTaskId() {
-        return taskId;
-    }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
 
     public UdpCallBack getCallBack() {
         return callBack;

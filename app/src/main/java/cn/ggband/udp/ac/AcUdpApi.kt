@@ -8,7 +8,6 @@ import cn.ggband.udp.UdpClient
 import cn.ggband.udp.ac.bean.ScanMessage
 import cn.ggband.udp.ac.bean.ScanPackage
 import cn.ggband.udp.anno.Field
-import cn.ggband.udp.anno.Task
 import com.ipcom.iunifi.network.udp.ac.implments.AcUdpResConvertImpl
 import java.net.InetAddress
 
@@ -40,8 +39,14 @@ interface AcUdpApi {
      * 扫描Ac
      */
     fun scan(
-        @Field body: ScanPackage,
-        @Task taskId: String = body.cmd.toString()
+        @Field body: ScanPackage
     ): Call<ScanMessage>
+
+    /**
+     * 扫描Ac
+     */
+    fun add(
+        @Field body: ScanPackage
+    ): Call<String>
 
 }

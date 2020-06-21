@@ -17,7 +17,7 @@ class UdpCmdCallbackHelper constructor(
 
     private var isTimeOutLoop = false
 
-    private val descOutTime = if (timeOut > 0) timeOut else 6000
+    private val descOutTime = if (timeOut > 0) timeOut else 3000
 
     private val mCallbacks: MutableList<CallbackParams> by lazy {
         Collections.synchronizedList(
@@ -25,21 +25,18 @@ class UdpCmdCallbackHelper constructor(
         )
     }
 
-    fun add(taskId: String, callback: UdpCallBack<*>, returnType: Type?) {
-        Log.d(UdpClient.LOG_TAG, "add callback to stack=>taskId:$taskId;returnType:$returnType")
-        mCallbacks.add(CallbackParams(taskId, callback, returnType))
+    fun add(callback: UdpCallBack<*>, returnType: Type?) {
+        Log.d(UdpClient.LOG_TAG, "add callback to stack=>;returnType:$returnType")
+        mCallbacks.add(CallbackParams(callback, returnType))
         if (!isTimeOutLoop) {
             startTimeOutLoop()
         }
     }
 
-    private fun getCallback(taskId: String): CallbackParams? {
+    private fun getCallback(callback: UdpCallBack<*>): CallbackParams? {
 
         return mCallbacks.filter {
-            if (taskId.isEmpty())
-                true
-            else
-                it.taskId == taskId
+            callback == it.callBack
         }.minBy { it.taskTime }
     }
 
@@ -48,8 +45,8 @@ class UdpCmdCallbackHelper constructor(
     }
 
     private fun startTimeOutLoop() {
-        isTimeOutLoop = true
         submit {
+            isTimeOutLoop = true
             while (isTimeOutLoop) {
                 if (mCallbacks.isEmpty()) {
                     isTimeOutLoop = false
@@ -58,13 +55,12 @@ class UdpCmdCallbackHelper constructor(
                 }
             }
         }
-
     }
 
 
-    fun callback(data: ByteArray, address: InetAddress) {
+    fun callback(callback: UdpCallBack<*>, data: ByteArray, address: InetAddress) {
         Log.d(UdpClient.LOG_TAG, "开始执行callback.............")
-        getCallback(convert.getTaskId(data))?.run {
+        getCallback(callback)?.run {
             //回调到主线程
             Handler(Looper.getMainLooper()).post {
                 callBack?.onReceive(
@@ -85,11 +81,17 @@ class UdpCmdCallbackHelper constructor(
     private fun dealTimeOutCallback() {
         val timeOutCallbacks =
             mCallbacks.filter { System.currentTimeMillis() - it.taskTime > descOutTime }
+
         timeOutCallbacks.forEach {
-            Log.d(UdpClient.LOG_TAG, "udp cmd:${it.taskId} 响应超时")
+            Log.d(UdpClient.LOG_TAG, "udp cmd:${it.returnType} 响应超时")
             it.callBack.onReceiveDone()
         }
         mCallbacks.removeAll(timeOutCallbacks)
+    }
+
+
+    fun isEmpty(): Boolean {
+        return mCallbacks.isEmpty()
     }
 
     private fun stopTimeOutLoop() {
