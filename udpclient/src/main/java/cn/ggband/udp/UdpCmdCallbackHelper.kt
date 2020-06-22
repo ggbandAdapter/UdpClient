@@ -17,7 +17,7 @@ class UdpCmdCallbackHelper constructor(
 
     private var isTimeOutLoop = false
 
-    private val descOutTime = if (timeOut > 0) timeOut else 3000
+    private val descOutTime = if (timeOut > 0) timeOut else 4000
 
     private val mCallbacks: MutableList<CallbackParams> by lazy {
         Collections.synchronizedList(
@@ -33,7 +33,7 @@ class UdpCmdCallbackHelper constructor(
         }
     }
 
-    private fun getCallback(callback: UdpCallBack<*>): CallbackParams? {
+    fun getCallback(callback: UdpCallBack<*>): CallbackParams? {
 
         return mCallbacks.filter {
             callback == it.callBack
@@ -59,7 +59,7 @@ class UdpCmdCallbackHelper constructor(
 
 
     fun callback(callback: UdpCallBack<*>, data: ByteArray, address: InetAddress) {
-        Log.d(UdpClient.LOG_TAG, "开始执行callback.............")
+        Log.d(UdpClient.LOG_TAG, "start callback.............")
         getCallback(callback)?.run {
             //回调到主线程
             Handler(Looper.getMainLooper()).post {
@@ -73,7 +73,7 @@ class UdpCmdCallbackHelper constructor(
                 }
             }
         } ?: kotlin.run {
-            Log.d(UdpClient.LOG_TAG, "callback.......CallbackParams == null")
+            Log.d(UdpClient.LOG_TAG, "callback not found........")
         }
     }
 
@@ -83,7 +83,7 @@ class UdpCmdCallbackHelper constructor(
             mCallbacks.filter { System.currentTimeMillis() - it.taskTime > descOutTime }
 
         timeOutCallbacks.forEach {
-            Log.d(UdpClient.LOG_TAG, "udp cmd:${it.returnType} 响应超时")
+            Log.d(UdpClient.LOG_TAG, "udp cmd:${it.returnType} receive finish!")
             it.callBack.onReceiveDone()
         }
         mCallbacks.removeAll(timeOutCallbacks)

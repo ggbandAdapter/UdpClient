@@ -12,10 +12,10 @@ class UdpSender(private val ip: String, private val port: Int) {
     fun sendMessage(buf: ByteArray) {
         try {
             mSendSKT?.send(buildSendPackage(buf))
-            Log.d(UdpClient.LOG_TAG, "已发送：" + String(buf))
+            Log.d(UdpClient.LOG_TAG, "send udp package：" + String(buf))
         } catch (exception: IOException) {
             exception.printStackTrace()
-            Log.d(UdpClient.LOG_TAG, "发送udp信息异常:$exception")
+            Log.d(UdpClient.LOG_TAG, "send udp package exception:$exception")
         }
     }
 
@@ -27,7 +27,7 @@ class UdpSender(private val ip: String, private val port: Int) {
                 val address = InetAddress.getByName(ip)
                 mSendSKT!!.joinGroup(address)
             } catch (exception: Exception) {
-                Log.d(UdpClient.LOG_TAG, "初始化udp发送器异常:$exception")
+                Log.d(UdpClient.LOG_TAG, "init udp sender exception:$exception")
                 exception.printStackTrace()
             }
     }

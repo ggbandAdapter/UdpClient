@@ -34,15 +34,15 @@ class UdpClient constructor(private val builder: Builder) {
 
 
     fun send(buf: ByteArray, callBack: UdpCallBack<*>, returnType: Type? = null) {
+        callbackHelper.add(callBack, returnType)
         submit {
+            UdpSender(builder.getIP(), builder.getsPort()).sendMessage(buf)
             UdpReceiver(
                 builder.getIP(),
                 builder.getRPort(),
                 callBack,
                 callbackHelper
             ).receiveMessage()
-            UdpSender(builder.getIP(), builder.getsPort()).sendMessage(buf)
-            callbackHelper.add(callBack, returnType)
         }
     }
 

@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             acUdpApi.scan(ScanPackage()).send({ data, inde ->
                 Log.d("ggband","收到：scan data:${data};")
             }, {
-                Log.d("ggband","收到：scan fail;")
+                Log.d("ggband","收到：scan finish;")
             })
 
         }
