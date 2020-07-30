@@ -2,6 +2,9 @@ package cn.ggband.udp;
 
 
 
+import android.os.Handler;
+import android.os.Looper;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
@@ -74,12 +77,22 @@ public class Platform {
             mClient.send(params.getData(), new UdpCallBack<Object>() {
                 @Override
                 public void onReceiveDone() {
-                    callback.onReceiveDone();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onReceiveDone();
+                        }
+                    });
                 }
 
                 @Override
-                public void onReceive(Object data, InetAddress address) {
-                    callback.onReceive(data, address);
+                public void onReceive(final Object data, final InetAddress address) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onReceive(data, address);
+                        }
+                    });
                 }
             }, params.getReturnType());
         }

@@ -1,7 +1,5 @@
 package cn.ggband.udp
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import cn.ggband.udp.bean.CallbackParams
 import cn.ggband.udp.interfaces.UdpResConvertInterface
@@ -61,16 +59,13 @@ class UdpCmdCallbackHelper constructor(
     fun callback(callback: UdpCallBack<*>, data: ByteArray, address: InetAddress) {
         Log.d(UdpClient.LOG_TAG, "start callback.............")
         getCallback(callback)?.run {
-            //回调到主线程
-            Handler(Looper.getMainLooper()).post {
-                callBack?.onReceive(
-                    convert.getConvertContent(
-                        data,
-                        returnType
-                    ), address
-                ) ?: kotlin.run {
-                    Log.d(UdpClient.LOG_TAG, "callback == null")
-                }
+            callBack?.onReceive(
+                convert.getConvertContent(
+                    data,
+                    returnType
+                ), address
+            ) ?: kotlin.run {
+                Log.d(UdpClient.LOG_TAG, "callback == null")
             }
         } ?: kotlin.run {
             Log.d(UdpClient.LOG_TAG, "callback not found........")
