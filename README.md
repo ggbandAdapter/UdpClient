@@ -48,7 +48,6 @@ val acUdpApi = acUdpClient.create(AcUdpApi::class.java)
 ### Android send Udp package.
 
 Step 1. Writing java interface Sending Upd method
-   
  ``` java
  interface AcUdpApi {
     fun scan(@Field body: ScanPackage): Call<ScanMessage>
@@ -58,13 +57,8 @@ Step 1. Writing java interface Sending Upd method
 ```
 
 Step 2. Call Upd Api.
-
  ``` java
-    acUdpApi.scan(ScanPackage()).send({ data, inde ->
-               
-            }, {
-
-            })
+ acUdpApi.scan(ScanPackage()).send({ data, inde -> }, { })
 ```
 --- For more details, please see [example](https://github.com/ggbandAdapter/UdpClient/tree/master/app)
 
