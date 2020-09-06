@@ -43,7 +43,7 @@ First, create a client that interacts with Udp.
 
 val acUdpApi = acUdpClient.create(AcUdpApi::class.java)
    
-### --- Android calls JS method.
+### --- Android send Udp package.
 
 Step 1. Writing java interface Sending Upd method
    
