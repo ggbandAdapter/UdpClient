@@ -35,33 +35,36 @@ Step 2. Add the dependency
 ## How to use
 
 First, create a client that interacts with Udp.
-
-  val acUdpClient = UdpClient.Builder().ip(Constants.DEVICE_AC_IP).sPort(Constants.DEVICE_AC_PORT)
+``` java
+  val acUdpClient = UdpClient.Builder()
+        .ip(Constants.DEVICE_AC_IP)
+        .sPort(Constants.DEVICE_AC_PORT)
         .rPort(Constants.RECEIVED_AC_PORT)
         .convert(AcUdpResConvertImpl()).build()
 
 val acUdpApi = acUdpClient.create(AcUdpApi::class.java)
+```
    
 ### Android send Udp package.
 
 Step 1. Writing java interface Sending Upd method
    
- ---java
+ ``` java
  interface AcUdpApi {
     fun scan(@Field body: ScanPackage): Call<ScanMessage>
     
     fun add(@Field body: ScanPackage): Call<String>
 }
----
+```
 
 Step 3. Call Upd Api.
 
- ---java
+ ``` java
     acUdpApi.scan(ScanPackage()).send({ data, inde ->
                
             }, {
 
             })
----
+```
 --- For more details, please see [example](https://github.com/ggbandAdapter/UdpClient/tree/master/app)
 
