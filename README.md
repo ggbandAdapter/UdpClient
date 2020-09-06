@@ -57,7 +57,7 @@ Step 1. Writing java interface Sending Upd method
 }
 ```
 
-Step 3. Call Upd Api.
+Step 2. Call Upd Api.
 
  ``` java
     acUdpApi.scan(ScanPackage()).send({ data, inde ->
