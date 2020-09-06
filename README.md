@@ -52,7 +52,7 @@ Step 1. Writing java interface Sending Upd method
  interface AcUdpApi {
     fun scan(@Field body: ScanPackage): Call<ScanMessage>
     
-    fun add(@Field body: ScanPackage): Call<String>
+    fun add(@Field body: BindPackage): Call<String>
 }
 ```
 
