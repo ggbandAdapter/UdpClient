@@ -48,15 +48,9 @@ val acUdpApi = acUdpClient.create(AcUdpApi::class.java)
 Step 1. Writing java interface Sending Upd method
    
  interface AcUdpApi {
-
-    fun scan(
-        @Field body: ScanPackage
-    ): Call<ScanMessage>
+    fun scan(@Field body: ScanPackage): Call<ScanMessage>
     
-    fun add(
-        @Field body: ScanPackage
-    ): Call<String>
-
+    fun add(@Field body: ScanPackage): Call<String>
 }
 
 Step 3. Call Upd Api.
@@ -64,7 +58,7 @@ Step 3. Call Upd Api.
     acUdpApi.scan(ScanPackage()).send({ data, inde ->
                
             }, {
-       
+
             })
 	    
 --- For more details, please see [example](https://github.com/ggbandAdapter/UdpClient/tree/master/app)
